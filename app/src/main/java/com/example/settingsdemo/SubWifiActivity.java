@@ -101,6 +101,12 @@ public class SubWifiActivity extends AppCompatActivity {
             }
         });
     }
+    private void clearScanList(){
+        Log.e("hefang","clearScanList" );
+        wifiListBeanList.clear();
+        mScanResultList.clear();
+        adapter.notifyDataSetChanged();
+    }
 
     //获取权限
     private void getPerMission() {
@@ -140,7 +146,7 @@ public class SubWifiActivity extends AppCompatActivity {
     }
 
     private void freshScanList(){
-        wifiListBeanList.clear();
+        clearScanList();
 
         //开启wifi
         MyWifiManager.openWifi(mWifiManager);
@@ -243,6 +249,9 @@ public class SubWifiActivity extends AppCompatActivity {
                 } else if (NetworkInfo.State.CONNECTED == info.getState()) {//wifi连接上了
                     Log.e("=====", "wifi connected!");
                     tv_wifiState.append("\n 连接状态：wifi以连接，wifi名称：" + MyWifiManager.getWiFiName(mWifiManager));
+                    //After connect, refresh scan list
+                    freshScanList();
+                    adapter.notifyDataSetChanged();
                 } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
                     Log.e("=====", "wifi is connecting...");
                     tv_wifiState.append("\n 连接状态：wifi正在连接");
@@ -292,6 +301,8 @@ public class SubWifiActivity extends AppCompatActivity {
                     //关闭状态则打开
                     mWifiManager.setWifiEnabled(false);
                 }
+                clearScanList();
+
             }
         });
     }
